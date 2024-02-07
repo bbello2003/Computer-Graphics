@@ -20,7 +20,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     // double squareRotate = 5;
     public static void main(String[] args) {
         JFrame f = new JFrame();
-        Assignment2_64050605_64051034 m = new Assignment2_64050605_64051034();
+        Assignment2_65050605_65051034 m = new Assignment2_65050605_65051034();
 
         f.add(m);
         f.setTitle("Assignment2");
