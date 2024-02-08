@@ -9,6 +9,9 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private Color targetColor = Color.decode("#08253E");
     private float blendRatio = 0.0f;
     private float blendStep = 0.002f;
+    private int soilPathYOffset = 0;
+    private double soilPathYVelocity = 1; // เพิ่มความเร็วของการขยับขึ้นลง
+
     double circleMove = 0;
     double circleVelocity = 100.0;
 
@@ -49,6 +52,13 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
             if (blendRatio >= 1.0f) {
                 blendRatio = 0.0f;
             }
+
+            // Move soilPath up and down (Y offset by soilPathYOffset)
+            soilPathYOffset += soilPathYVelocity;
+            if (soilPathYOffset > 10 || soilPathYOffset < -40) {
+                soilPathYVelocity = -soilPathYVelocity; // การเปลี่ยนทิศทางของการขยับ
+            }
+
             repaint();
             blendRatio += blendStep;
             try {
@@ -86,14 +96,15 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         g2d.translate(-circleMove, 10);
 
         // Soil
-        int x = 190;
-        int y = 360;
-        int width = 200;
-        int height = 75;
+        int x = 185;
+        int y = 395 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
+        int width = 210;
+        int height = 80;
         GeneralPath soilPath = new GeneralPath();
         soilPath.moveTo(x + 20, y + height / 2);
         soilPath.curveTo(x, y + height / 2, x, y, x + width / 4, y);
-        soilPath.curveTo(x + width / 2 - 20, y, x + width / 2 - 20, y + height / 2 - 30, x + width / 2, y + height / 2 - 30);
+        soilPath.curveTo(x + width / 2 - 20, y, x + width / 2 - 20, y + height / 2 - 30, x + width / 2,
+                y + height / 2 - 30);
         soilPath.curveTo(x + width / 2 + 20, y + height / 2 - 30, x + width / 2 + 20, y, x + width * 3 / 4, y);
         soilPath.curveTo(x + width, y, x + width, y + height / 2, x + width - 20, y + height / 2);
         g2d.setColor(Color.decode("#867052"));
@@ -115,18 +126,19 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         Polygon polygon = new Polygon(xPoints, yPoints, numPoints);
         g2d.fillPolygon(polygon);
 
-        //ขอบกระถาง
+        // Pot border
         int xRect1 = 166;
         int yRect1 = 390;
         int widthRect1 = 245;
         int heightRect1 = 20;
         int arcWidth1 = 5;
         int arcHeight1 = 5;
-        RoundRectangle2D rect1 = new RoundRectangle2D.Double(xRect1, yRect1, widthRect1, heightRect1, arcWidth1, arcHeight1);
+        RoundRectangle2D rect1 = new RoundRectangle2D.Double(xRect1, yRect1, widthRect1, heightRect1, arcWidth1,
+                arcHeight1);
         g2d.setColor(Color.decode("#ec8865"));
         g2d.fill(rect1);
 
-        //เงาขอบกระถาง
+        // Pot shadow
         Color shadowColor = Color.decode("#d7785c");
         g2d.setColor(shadowColor);
         int[] x1Points = { 400, 175, 195, 380 };
