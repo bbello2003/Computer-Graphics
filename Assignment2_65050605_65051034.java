@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 
 public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private Color startColor = Color.decode("#71B3EC");
@@ -10,14 +13,16 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     double circleVelocity = 100.0;
 
     public static void main(String[] args) {
-        Assignment2_65050605_65051034 m = new Assignment2_65050605_65051034();
-        JFrame f = new JFrame();
-        f.add(m);
-        f.setTitle("FROM BABIES TO ...");
-        f.setSize(600, 600);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
-        (new Thread(m)).start();
+        SwingUtilities.invokeLater(() -> {
+            Assignment2_65050605_65051034 m = new Assignment2_65050605_65051034();
+            JFrame f = new JFrame();
+            f.add(m);
+            f.setTitle("FROM BABIES TO ...");
+            f.setSize(600, 600);
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.setVisible(true);
+            (new Thread(m)).start();
+        });
     }
 
     @Override
@@ -29,7 +34,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
             elapsedTime = currentTime - lastTime;
             lastTime = currentTime;
 
-            // Move 50 pixel per second
+            // Move 50 pixels per second
             circleMove += circleVelocity * elapsedTime / 1000.0;
             // Check if the circle hits the edge
             if (circleMove >= 600 - 100) {
@@ -40,7 +45,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
                 circleVelocity = -circleVelocity;
             }
 
-            // เปลี่ยนสีเมื่อ blendRatio ถึง 1.0
+            // Change color when blendRatio reaches 1.0
             if (blendRatio >= 1.0f) {
                 blendRatio = 0.0f;
             }
@@ -79,5 +84,55 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         g2d.translate(circleMove, 10);
         g2d.drawOval(0, 0, 100, 100);
         g2d.translate(-circleMove, 10);
+
+        // Soil
+        int x = 190;
+        int y = 360;
+        int width = 200;
+        int height = 75;
+        GeneralPath soilPath = new GeneralPath();
+        soilPath.moveTo(x + 20, y + height / 2);
+        soilPath.curveTo(x, y + height / 2, x, y, x + width / 4, y);
+        soilPath.curveTo(x + width / 2 - 20, y, x + width / 2 - 20, y + height / 2 - 30, x + width / 2, y + height / 2 - 30);
+        soilPath.curveTo(x + width / 2 + 20, y + height / 2 - 30, x + width / 2 + 20, y, x + width * 3 / 4, y);
+        soilPath.curveTo(x + width, y, x + width, y + height / 2, x + width - 20, y + height / 2);
+        g2d.setColor(Color.decode("#867052"));
+        g2d.fill(soilPath);
+        g2d.setColor(Color.decode("#867052"));
+        g2d.draw(soilPath);
+
+        // Shadow under the plant pot
+        g2d.setColor(Color.GRAY);
+        Ellipse2D.Float ovalshadow = new Ellipse2D.Float(135, 494, 300, 15);
+        g2d.fill(ovalshadow);
+
+        // Plant pot
+        Color plantpotColor = Color.decode("#ec8865");
+        g2d.setColor(plantpotColor);
+        int[] xPoints = { 400, 175, 195, 380 };
+        int[] yPoints = { 400, 400, 500, 500 };
+        int numPoints = 4;
+        Polygon polygon = new Polygon(xPoints, yPoints, numPoints);
+        g2d.fillPolygon(polygon);
+
+        //ขอบกระถาง
+        int xRect1 = 166;
+        int yRect1 = 390;
+        int widthRect1 = 245;
+        int heightRect1 = 20;
+        int arcWidth1 = 5;
+        int arcHeight1 = 5;
+        RoundRectangle2D rect1 = new RoundRectangle2D.Double(xRect1, yRect1, widthRect1, heightRect1, arcWidth1, arcHeight1);
+        g2d.setColor(Color.decode("#ec8865"));
+        g2d.fill(rect1);
+
+        //เงาขอบกระถาง
+        Color shadowColor = Color.decode("#d7785c");
+        g2d.setColor(shadowColor);
+        int[] x1Points = { 400, 175, 195, 380 };
+        int[] y1Points = { 410, 410, 420, 420 };
+        int num1Points = 4;
+        Polygon polygon1 = new Polygon(x1Points, y1Points, num1Points);
+        g2d.fillPolygon(polygon1);
     }
 }
