@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
@@ -76,6 +77,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
+        // Calculate the color blend ratio background color
         int red, green, blue;
         if (blendRatio < 0.5f) {
             red = (int) (startColor.getRed() * (1 - blendRatio * 2) + targetColor.getRed() * blendRatio * 2);
@@ -190,6 +192,58 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         }
 
         public void draw(Graphics2D g2d) {
+            // วาดใบไม้
+            g2d.setColor(Color.decode("#87B738"));
+            double leafAngle = 30;
+            int leafWidth = height / 5;
+            int leafHeight = width + 1;
+            int leafX = x - leafWidth / 2 - 20;
+            int leafY = y - height - leafHeight + 60;
+            AffineTransform oldTransform = g2d.getTransform();
+            g2d.rotate(Math.toRadians(leafAngle), leafX + leafWidth / 2, leafY + leafHeight / 2);
+            g2d.fillOval(leafX, leafY, leafWidth, leafHeight);
+            g2d.setTransform(oldTransform);
+            // ริ้วใบไม้
+            g2d.setColor(Color.decode("#84A827"));
+            int xRect = x - leafWidth / 2;
+            int yRect = y - height - leafHeight + 73;
+            int widthRect = 33;
+            int heightRect = 4;
+            int arcWidth1 = 6;
+            int arcHeight1 = 6;
+            RoundRectangle2D rect = new RoundRectangle2D.Double(xRect, yRect, widthRect, heightRect, arcWidth1,
+                    arcHeight1);
+            oldTransform = g2d.getTransform();
+            g2d.rotate(Math.toRadians(32), xRect + widthRect / 2.0, yRect + heightRect / 2.0);
+            g2d.fill(rect);
+            g2d.setTransform(oldTransform);
+
+            // วาดใบไม้ 2
+            g2d.setColor(Color.decode("#87B738"));
+            leafAngle = 160;
+            leafWidth = height / 5;
+            leafHeight = width + 1;
+            leafX = x - leafWidth / 2 + 45;
+            leafY = y - height - leafHeight + 120;
+            oldTransform = g2d.getTransform();
+            g2d.rotate(Math.toRadians(leafAngle), leafX + leafWidth / 2, leafY + leafHeight / 2);
+            g2d.fillOval(leafX, leafY, leafWidth, leafHeight);
+            g2d.setTransform(oldTransform);
+            // ริ้วใบไม้ 2
+            g2d.setColor(Color.decode("#84A827"));
+            xRect = x - leafWidth / 2 + 54;
+            yRect = y - height - leafHeight + 132;
+            widthRect = 33;
+            heightRect = 4;
+            arcWidth1 = 6;
+            arcHeight1 = 6;
+            rect = new RoundRectangle2D.Double(xRect, yRect, widthRect, heightRect, arcWidth1,
+                    arcHeight1);
+            oldTransform = g2d.getTransform();
+            g2d.rotate(Math.toRadians(160), xRect + widthRect / 2.0, yRect + heightRect / 2.0);
+            g2d.fill(rect);
+            g2d.setTransform(oldTransform);
+
             // วาดลำต้น
             g2d.setColor(color);
             g2d.fillRect(x, y - height, width, height);
@@ -201,7 +255,6 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
             int yPot = y - height - heightPot;
             int arcWidth = 6;
             int arcHeight = 6;
-
             RoundRectangle2D bambooPot = new RoundRectangle2D.Double(xPot, yPot, widthPot, heightPot, arcWidth,
                     arcHeight);
             g2d.fill(bambooPot);
@@ -244,14 +297,6 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
             int[] y1Points5 = { yPot + 247, yPot + 247, yPot + 250, yPot + 250 };
             polygon = new Polygon(x1Points5, y1Points5, x1Points5.length);
             g2d.fillPolygon(polygon);
-
-            // วาดใบ
-            int leafWidth = width * 3 / 2;
-            int leafHeight = height * 3 / 4;
-            int leafX = x - (leafWidth - width) / 2;
-            int leafY = y - height - leafHeight;
-            g2d.setColor(new Color(0, 128, 0)); // เลือกสีเขียวสว่าง
-            // g2d.fillOval(leafX, leafY, leafWidth, leafHeight);
         }
     }
 }
