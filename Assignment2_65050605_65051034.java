@@ -11,8 +11,8 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private Color moonTargetColor = Color.decode("#F9C43D");
     private float blendRatio = 0.0f;
     private float blendStep = 0.002f;
-    private int soilPathYOffset = 0;
-    private double soilPathYVelocity = 1; // เพิ่มความเร็วของการขยับขึ้นลง
+    private double soilPathYOffset = 0;
+    private double soilPathYVelocity = -0.3; // ความเร็วของการขยับดิน
 
     double circleMove = 0;
     double circleVelocity = 100.0;
@@ -52,8 +52,8 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
 
             // Move soilPath up and down (Y offset by soilPathYOffset)
             soilPathYOffset += soilPathYVelocity;
-            if (soilPathYOffset > 10 || soilPathYOffset < -40) {
-                soilPathYVelocity = -soilPathYVelocity; // การเปลี่ยนทิศทางของการขยับ
+            if (soilPathYOffset < -35) {
+                soilPathYVelocity = 0; // หยุดการเคลื่อนที่เมื่อดินขยับไปเกิน 10
             }
 
             repaint();
@@ -111,8 +111,8 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         g2d.translate(-circleMove, -moonY);
 
         // Soil
-        int x = 185;
-        int y = 395 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
+        double x = 185;
+        double y = 395 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
         int width = 210;
         int height = 80;
         GeneralPath soilPath = new GeneralPath();
@@ -122,9 +122,9 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
                 y + height / 2 - 30);
         soilPath.curveTo(x + width / 2 + 20, y + height / 2 - 30, x + width / 2 + 20, y, x + width * 3 / 4, y);
         soilPath.curveTo(x + width, y, x + width, y + height / 2, x + width - 20, y + height / 2);
-        g2d.setColor(Color.decode("#867052"));
+        g2d.setColor(Color.decode("#746249"));
         g2d.fill(soilPath);
-        g2d.setColor(Color.decode("#867052"));
+        g2d.setColor(Color.decode("#746249"));
         g2d.draw(soilPath);
 
         // Shadow under the plant pot
