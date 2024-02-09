@@ -13,9 +13,10 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private float blendStep = 0.002f;
     private double soilPathYOffset = 0;
     private double soilPathYVelocity = -0.3; // ความเร็วของการขยับดิน
-
-    double circleMove = 0;
-    double circleVelocity = 100.0;
+    private double bambooY = 700;
+    private double bambooVelocity = 20;
+    private double circleMove = 0;
+    private double circleVelocity = 100.0;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -33,13 +34,13 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     @Override
     public void run() {
         double lastTime = System.currentTimeMillis();
+        double starTime = lastTime;
         double currentTime, elapsedTime;
         while (true) {
             currentTime = System.currentTimeMillis();
             elapsedTime = currentTime - lastTime;
             lastTime = currentTime;
 
-            // Move 50 pixels per second
             circleMove += circleVelocity * elapsedTime / 1000.0;
 
             // Change color when blendRatio reaches 1.0
@@ -50,11 +51,16 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
                 circleMove = 0;
             }
 
-            // Move soilPath up and down (Y offset by soilPathYOffset)
+            // Move soilPath up (Y offset by soilPathYOffset)
             soilPathYOffset += soilPathYVelocity;
             if (soilPathYOffset < -35) {
-                soilPathYVelocity = 0; // หยุดการเคลื่อนที่เมื่อดินขยับไปเกิน 10
+                soilPathYVelocity = 0; // หยุดการเคลื่อนที่เมื่อดินขยับถึงจุดที่กำหนด
             }
+
+            if (bambooY <= 450)
+                bambooVelocity = 0;
+            if (currentTime - starTime >= 2000)
+                bambooY -= bambooVelocity * elapsedTime / 1000.0;
 
             repaint();
             blendRatio += blendStep;
@@ -110,6 +116,14 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         g2d.fillOval(-100, 0, 100, 100);
         g2d.translate(-circleMove, -moonY);
 
+        // Bamboo
+        int bambooHeight = 300;
+        Color bambooColor = Color.decode("#9FC72E");
+        int bambooX = 279;
+        int bambooWidth = 23;
+        Bamboo bamboo = new Bamboo(bambooX, (int) (bambooY), bambooWidth, bambooHeight, bambooColor);
+        bamboo.draw(g2d);
+
         // Soil
         double x = 185;
         double y = 395 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
@@ -161,5 +175,83 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         int num1Points = 4;
         Polygon polygon1 = new Polygon(x1Points, y1Points, num1Points);
         g2d.fillPolygon(polygon1);
+    }
+
+    public class Bamboo {
+        private int x, y, width, height;
+        private Color color;
+
+        public Bamboo(int x, int y, int width, int height, Color color) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.color = color;
+        }
+
+        public void draw(Graphics2D g2d) {
+            // วาดลำต้น
+            g2d.setColor(color);
+            g2d.fillRect(x, y - height, width, height);
+
+            // วาดปล้อง
+            int widthPot = 29;
+            int heightPot = 7;
+            int xPot = x + width / 8 - 5;
+            int yPot = y - height - heightPot;
+            int arcWidth = 6;
+            int arcHeight = 6;
+
+            RoundRectangle2D bambooPot = new RoundRectangle2D.Double(xPot, yPot, widthPot, heightPot, arcWidth,
+                    arcHeight);
+            g2d.fill(bambooPot);
+
+            bambooPot = new RoundRectangle2D.Double(xPot, yPot + 60, widthPot, heightPot, arcWidth, arcHeight);
+            g2d.fill(bambooPot);
+
+            bambooPot = new RoundRectangle2D.Double(xPot, yPot + 120, widthPot, heightPot, arcWidth, arcHeight);
+            g2d.fill(bambooPot);
+
+            bambooPot = new RoundRectangle2D.Double(xPot, yPot + 180, widthPot, heightPot, arcWidth, arcHeight);
+            g2d.fill(bambooPot);
+
+            bambooPot = new RoundRectangle2D.Double(xPot, yPot + 240, widthPot, heightPot, arcWidth, arcHeight);
+            g2d.fill(bambooPot);
+
+            // เงาปล้อง
+            g2d.setColor(color.darker());
+            int[] x1Points = { xPot + 2, xPot + 27, xPot + 24, xPot + 5 };
+            int[] y1Points = { yPot + 7, yPot + 7, yPot + 10, yPot + 10 };
+            Polygon polygon = new Polygon(x1Points, y1Points, x1Points.length);
+            g2d.fillPolygon(polygon);
+
+            int[] x1Points2 = { xPot + 2, xPot + 27, xPot + 24, xPot + 5 };
+            int[] y1Points2 = { yPot + 67, yPot + 67, yPot + 70, yPot + 70 };
+            polygon = new Polygon(x1Points2, y1Points2, x1Points2.length);
+            g2d.fillPolygon(polygon);
+
+            int[] x1Points3 = { xPot + 2, xPot + 27, xPot + 24, xPot + 5 };
+            int[] y1Points3 = { yPot + 127, yPot + 127, yPot + 130, yPot + 130 };
+            polygon = new Polygon(x1Points3, y1Points3, x1Points3.length);
+            g2d.fillPolygon(polygon);
+
+            int[] x1Points4 = { xPot + 2, xPot + 27, xPot + 24, xPot + 5 };
+            int[] y1Points4 = { yPot + 187, yPot + 187, yPot + 190, yPot + 190 };
+            polygon = new Polygon(x1Points4, y1Points4, x1Points4.length);
+            g2d.fillPolygon(polygon);
+
+            int[] x1Points5 = { xPot + 2, xPot + 27, xPot + 24, xPot + 5 };
+            int[] y1Points5 = { yPot + 247, yPot + 247, yPot + 250, yPot + 250 };
+            polygon = new Polygon(x1Points5, y1Points5, x1Points5.length);
+            g2d.fillPolygon(polygon);
+
+            // วาดใบ
+            int leafWidth = width * 3 / 2;
+            int leafHeight = height * 3 / 4;
+            int leafX = x - (leafWidth - width) / 2;
+            int leafY = y - height - leafHeight;
+            g2d.setColor(new Color(0, 128, 0)); // เลือกสีเขียวสว่าง
+            // g2d.fillOval(leafX, leafY, leafWidth, leafHeight);
+        }
     }
 }
