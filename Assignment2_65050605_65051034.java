@@ -6,7 +6,9 @@ import java.awt.geom.GeneralPath;
 
 public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private Color startColor = Color.decode("#71B3EC");
+    private Color moonStartColor = Color.decode("#F9403D");
     private Color targetColor = Color.decode("#08253E");
+    private Color moonTargetColor = Color.decode("#F9C43D");
     private float blendRatio = 0.0f;
     private float blendStep = 0.002f;
     private int soilPathYOffset = 0;
@@ -39,18 +41,13 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
 
             // Move 50 pixels per second
             circleMove += circleVelocity * elapsedTime / 1000.0;
-            // Check if the circle hits the edge
-            if (circleMove >= 600 - 100) {
-                circleMove = 600 - 100;
-                circleVelocity = -circleVelocity;
-            } else if (circleMove <= 0) {
-                circleMove = 0;
-                circleVelocity = -circleVelocity;
-            }
 
             // Change color when blendRatio reaches 1.0
             if (blendRatio >= 1.0f) {
                 blendRatio = 0.0f;
+            }
+            if (blendRatio == 0.0f) {
+                circleMove = 0;
             }
 
             // Move soilPath up and down (Y offset by soilPathYOffset)
@@ -90,10 +87,28 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         g2d.setColor(blendedColor);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
-        g2d.setColor(Color.yellow);
-        g2d.translate(circleMove, 10);
-        g2d.drawOval(0, 0, 100, 100);
-        g2d.translate(-circleMove, 10);
+        // Calculate the color blend ratio based on background color change
+        float moonBlendRatio;
+        if (blendRatio < 0.5f) {
+            moonBlendRatio = blendRatio * 2; // Increase blend ratio linearly for moon
+        } else {
+            moonBlendRatio = 1.0f - (blendRatio - 0.5f) * 2; // Decrease blend ratio linearly for moon
+        }
+
+        // Calculate moon color based on blend ratio
+        int moonRed = (int) (moonStartColor.getRed() * (1 - moonBlendRatio)
+                + moonTargetColor.getRed() * moonBlendRatio);
+        int moonGreen = (int) (moonStartColor.getGreen() * (1 - moonBlendRatio)
+                + moonTargetColor.getGreen() * moonBlendRatio);
+        int moonBlue = (int) (moonStartColor.getBlue() * (1 - moonBlendRatio)
+                + moonTargetColor.getBlue() * moonBlendRatio);
+        Color moonColor = new Color(moonRed, moonGreen, moonBlue);
+        int moonY = (int) (50 + Math.sin((circleMove / 600 * Math.PI) + Math.PI) * 50);
+
+        g2d.setColor(moonColor);
+        g2d.translate(circleMove, moonY);
+        g2d.fillOval(-100, 0, 100, 100);
+        g2d.translate(-circleMove, -moonY);
 
         // Soil
         int x = 185;
