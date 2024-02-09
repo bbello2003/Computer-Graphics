@@ -14,8 +14,8 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private float blendStep = 0.002f;
     private double soilPathYOffset = 0;
     private double soilPathYVelocity = -0.3; // ความเร็วของการขยับดิน
-    private double bambooY = 740;
-    private double bambooVelocity = 20;
+    private double bambooY = 800;
+    private double bambooVelocity = 30;
     private double circleMove = 0;
     private double circleVelocity = 100.0;
 
@@ -35,7 +35,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     @Override
     public void run() {
         double lastTime = System.currentTimeMillis();
-        double starTime = lastTime;
+        double startTime = lastTime;
         double currentTime, elapsedTime;
         while (true) {
             currentTime = System.currentTimeMillis();
@@ -58,10 +58,19 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
                 soilPathYVelocity = 0; // หยุดการเคลื่อนที่เมื่อดินขยับถึงจุดที่กำหนด
             }
 
-            if (bambooY <= 450)
+            if (bambooY <= 450) {
                 bambooVelocity = 0;
-            if (currentTime - starTime >= 2000)
-                bambooY -= bambooVelocity * elapsedTime / 1000.0;
+            }
+            bambooY -= bambooVelocity * elapsedTime / 1000.0;
+
+            // Check if 13 seconds have passed
+            if (currentTime - startTime >= 13000) {
+                soilPathYOffset = 0;
+                soilPathYVelocity = -0.3;
+                bambooY = 800;
+                bambooVelocity = 30;
+                startTime = currentTime;
+            }
 
             repaint();
             blendRatio += blendStep;
