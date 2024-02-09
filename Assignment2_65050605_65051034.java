@@ -126,7 +126,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
 
         // Soil
         double x = 185;
-        double y = 395 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
+        double y = 435 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
         int width = 210;
         int height = 80;
         GeneralPath soilPath = new GeneralPath();
@@ -143,21 +143,21 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
 
         // Shadow under the plant pot
         g2d.setColor(Color.GRAY);
-        Ellipse2D.Float ovalshadow = new Ellipse2D.Float(135, 494, 300, 15);
+        Ellipse2D.Float ovalshadow = new Ellipse2D.Float(135, 534, 300, 15);
         g2d.fill(ovalshadow);
 
         // Plant pot
         Color plantpotColor = Color.decode("#ec8865");
         g2d.setColor(plantpotColor);
         int[] xPoints = { 400, 175, 195, 380 };
-        int[] yPoints = { 400, 400, 500, 500 };
+        int[] yPoints = { 440, 440, 540, 540 };
         int numPoints = 4;
         Polygon polygon = new Polygon(xPoints, yPoints, numPoints);
         g2d.fillPolygon(polygon);
 
         // Pot border
         int xRect1 = 166;
-        int yRect1 = 390;
+        int yRect1 = 430;
         int widthRect1 = 245;
         int heightRect1 = 20;
         int arcWidth1 = 5;
@@ -171,7 +171,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         Color shadowColor = Color.decode("#d7785c");
         g2d.setColor(shadowColor);
         int[] x1Points = { 400, 175, 195, 380 };
-        int[] y1Points = { 410, 410, 420, 420 };
+        int[] y1Points = { 450, 450, 460, 460 };
         int num1Points = 4;
         Polygon polygon1 = new Polygon(x1Points, y1Points, num1Points);
         g2d.fillPolygon(polygon1);
@@ -219,7 +219,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
             g2d.fill(bambooPot);
 
             // เงาปล้อง
-            g2d.setColor(color.darker());
+            g2d.setColor(Color.decode("#84A827"));
             int[] x1Points = { xPot + 2, xPot + 27, xPot + 24, xPot + 5 };
             int[] y1Points = { yPot + 7, yPot + 7, yPot + 10, yPot + 10 };
             Polygon polygon = new Polygon(x1Points, y1Points, x1Points.length);
