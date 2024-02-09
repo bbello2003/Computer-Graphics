@@ -126,6 +126,10 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
         Bamboo bamboo = new Bamboo(bambooX, (int) (bambooY), bambooWidth, bambooHeight, bambooColor);
         bamboo.draw(g2d);
 
+        // สี่เหลี่ยมบังไม้ไผ่
+        g2d.setColor(blendedColor);
+        g2d.fillRect(175, 540, 225, 60);
+
         // Soil
         double x = 185;
         double y = 435 + soilPathYOffset; // ปรับตำแหน่ง Y ด้วย soilPathYOffset
