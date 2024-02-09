@@ -13,7 +13,7 @@ public class Assignment2_65050605_65051034 extends JPanel implements Runnable {
     private float blendStep = 0.002f;
     private double soilPathYOffset = 0;
     private double soilPathYVelocity = -0.3; // ความเร็วของการขยับดิน
-    private double bambooY = 700;
+    private double bambooY = 740;
     private double bambooVelocity = 20;
     private double circleMove = 0;
     private double circleVelocity = 100.0;
