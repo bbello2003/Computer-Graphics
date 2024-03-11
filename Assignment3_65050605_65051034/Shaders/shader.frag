@@ -26,14 +26,14 @@ vec3 diffuseLight()
 
 vec3 ambientLight()
 {
-    float ambientStrength = 0.2f;
+    float ambientStrength = 0.3f;
     vec3 ambient = lightColour * ambientStrength;
     return ambient;
 }
 
 vec3 specularLight()
 {
-    float specularStrength = 0.8f;
+    float specularStrength = 1.0f;
     float shininess = 64.0f;
 
     vec3 lightDir = normalize(lightPos - FragPos);

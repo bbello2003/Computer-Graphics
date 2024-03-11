@@ -19,6 +19,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+using namespace std;
+
+struct TexturedMesh
+{
+    Mesh *mesh;
+    GLuint textureID;
+};
+
 const GLint WIDTH = 800, HEIGHT = 600;
 
 Window mainWindow;
@@ -35,6 +43,8 @@ static const char *vShader = "Shaders/shader.vert";
 
 // Fragment Shader
 static const char *fShader = "Shaders/shader.frag";
+
+std::vector<TexturedMesh> texturedMeshList;
 
 void CreateTriangle()
 {
@@ -58,13 +68,66 @@ void CreateTriangle()
     meshList.push_back(obj1);
 }
 
+GLuint loadTexture(const char *texturePath)
+{
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, nrChannels == 4 ? GL_RGBA : GL_RGB, width, height, 0, nrChannels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Fail to load image: " << texturePath << std::endl;
+    }
+
+    stbi_image_free(data);
+    return textureID;
+}
+
 void CreateOBJ()
 {
     Mesh *obj1 = new Mesh();
     bool loaded = obj1->CreateMeshFromOBJ("Models/Mammoth.obj");
 
     if (loaded)
-        meshList.push_back(obj1);
+    {
+        GLuint textureID1 = loadTexture("Textures/brown.png");
+        texturedMeshList.push_back({obj1, textureID1});
+    }
+    else
+        std::cout << "Failed to load model" << std::endl;
+
+    Mesh *obj2 = new Mesh();
+    loaded = obj2->CreateMeshFromOBJ("Models/Sloth.obj");
+
+    if (loaded)
+    {
+        GLuint textureID2 = loadTexture("Textures/lightbrown.png");
+        texturedMeshList.push_back({obj2, textureID2});
+    }
+    else
+        std::cout << "Failed to load model" << std::endl;
+
+    Mesh *obj3 = new Mesh();
+    loaded = obj3->CreateMeshFromOBJ("Models/SabreTooth.obj");
+
+    if (loaded)
+    {
+        GLuint textureID3 = loadTexture("Textures/orange.png");
+        texturedMeshList.push_back({obj3, textureID3});
+    }
     else
         std::cout << "Failed to load model" << std::endl;
 }
@@ -106,7 +169,6 @@ int main()
     mainWindow = Window(WIDTH, HEIGHT, 3, 3);
     mainWindow.initialise();
 
-    // CreateTriangle();
     CreateOBJ();
     CreateShaders();
 
@@ -124,32 +186,6 @@ int main()
     // glm::mat4 projection = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, 0.1f, 100.0f);
 
     float deltaTime, lastFrame;
-
-    // texture
-    unsigned int texture;
-
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("Textures/uvmap.png", &width, &height, &nrChannels, 0);
-
-    if (data)
-    {
-        // bind image with texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
 
     // Loop until window closed
     while (!mainWindow.getShouldClose())
@@ -205,16 +241,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::vec3 pyramidPosition[] = {
-            glm::vec3(0.0f, 0.0f, -2.5f),
-            glm::vec3(2.0f, 5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3(2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f, 3.0f, -7.5f),
-            glm::vec3(1.3f, -2.0f, -2.5f),
-            glm::vec3(1.5f, 2.0f, -2.5f),
-            glm::vec3(1.5f, 0.2f, -1.5f),
-            glm::vec3(-1.3f, 1.0f, -1.5f)};
+            glm::vec3(0.0f, -1.0f, -2.5f),
+            glm::vec3(3.0f, -1.0f, -1.5f),
+            glm::vec3(5.0f, -1.0f, 1.5f)};
 
         glm::mat4 view(1.0f);
 
@@ -236,7 +265,6 @@ int main()
 
         // view = glm::lookAt(cameraPos, cameraPos + cameraDirection, cameraUp);
 
-        // draw here
         shaderList[0].UseShader();
         uniformModel = shaderList[0].GetUniformLocation("model");
         uniformProjection = shaderList[0].GetUniformLocation("projection");
@@ -247,12 +275,17 @@ int main()
         glUniform3fv(shaderList[0].GetUniformLocation("lightPos"), 1, (GLfloat *)&lightPos);
         glUniform3fv(shaderList[0].GetUniformLocation("viewPos"), 1, (GLfloat *)&cameraPos);
 
-        for (int i = 0; i < 1; i++)
+        // draw here
+        for (size_t j = 0; j < texturedMeshList.size() && texturedMeshList[j].textureID != 0; ++j)
         {
             glm::mat4 model(1.0f);
-            model = glm::translate(model, pyramidPosition[i]);
-            model = glm::scale(model, glm::vec3(0.8f, 0.8f, 1.0f));
-            model = glm::rotate(model, glm::radians(2.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = glm::translate(model, pyramidPosition[j]);
+
+            if (j == 2)
+                model = glm::scale(model, glm::vec3(1.7f, 1.7f, 1.9f));
+            else
+                model = glm::scale(model, glm::vec3(0.8f, 0.8f, 1.0f));
+            model = glm::rotate(model, glm::radians(-30.0f * j), glm::vec3(0.0f, 1.0f, 0.0f));
 
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
             glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
@@ -260,14 +293,12 @@ int main()
 
             // object
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture);
-            meshList[0]->RenderMesh();
+            glBindTexture(GL_TEXTURE_2D, texturedMeshList[j].textureID);
+            texturedMeshList[j].mesh->RenderMesh();
         }
 
         glUseProgram(0);
         // end draw
-
-        // magic word - SAKURA
 
         mainWindow.swapBuffers();
     }
